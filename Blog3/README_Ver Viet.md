@@ -6,7 +6,7 @@ Blog này tập trung nói về cách tạo một chatbor và cách deploy chatb
 Ở bài viết này, ta tạo ra một chatbot có thể trả lời các câu hỏi mà người dùng nhập vào. Chatbot sẽ được triển khai trên server, không phải trên máy tính cá nhân, do đó người dùng có thể truy cập thông qua trình duyệt và chatbot luôn sẵn sàng trả lời bất cứ lúc nào. 
 
 <p align="center">
-  <img src="images\blog_3_graph_part1.png" style="margin: 0 auto; display: block;"><br/>
+  <img src="images\blog3_graph_part1.png" style="margin: 0 auto; display: block;"><br/>
   <em>Hình 1.1. Sơ đồ minh họa</em>
 </p>
 
