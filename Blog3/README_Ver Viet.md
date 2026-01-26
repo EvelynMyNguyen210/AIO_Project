@@ -1,3 +1,51 @@
+Blog này tập trung nói về cách tạo một chatbor và cách deploy chatbot.
+
+# 1. Giới thiệu chatbot và xác định phạm vi hoạt động
+## 1.1 Giới thiệu chatbot? 
+Ở bài viết này, ta tạo ra một chatbot có thể trả lời các câu hỏi mà người dùng nhập vào. Chatbot sẽ được triển khai trên server, không phải trên máy tính cá nhân, do đó người dùng có thể truy cập thông qua trình duyệt và chatbot luôn sẵn sàng trả lời bất cứ lúc nào. 
+
+📌 Sơ đồ minh hoạ:
+User → Web UI → Chatbot Backend → AI Model → Response
+
+### Vai trò của từng khối:
+-	User: Người sử dụng chatbot, đặt ra yêu cầu và câu hỏi cho chatbot.
+-	Web UI: Giao diện người dùng trên web, giúp người dùng tương tác với chatbot và các chức năng khác thông qua trình duyệt.
+-	Chatbot Backend: Trung tâm xử lí logic và luồng hội thoại, câu hỏi của người dùng sẽ được xử lí để tạo ra câu trả lời.
+-	AI Model: Cung cấp khả năng hiểu ngôn ngữ của người dùng, từ đó sinh ra câu trả lời.
+-	Response: Phản hồi từ chatbot sẽ được sinh ra và hiển thị trên trình duyệt.
+
+## 1.2 Xác định các chức năng và phạm vi của chatbot:
+Vì blog này tập trung vào việc xây dựng một chatbot đơn giản và triển khai trên web, do đó các yêu cầu về chức năng và phạm vi sẽ được giới hạn để phù hợp với công suất phản hồi:
+
+Only accept text input:
+Giới hạn đầu vào của chatbot là câu hỏi dạng chuỗi để tiết kiệm thời gian phản hồi. Phạm vi câu hỏi không giới hạn.
+
+Customizable system prompt / personality: (Phần này có thêm ảnh đính kèm?)
+Đây là các tính năng được tích hợp trên Web UI, người dùng có thể tùy chỉnh các thông số để phản hồi của chatbot đa dạng hơn: 
+-	Multilingual support: Người dùng có thể input câu hỏi dạng song ngữ (cụ thể là tiếng Anh hoặc tiếng Việt)
+-	Basic safety / content filtering: Lọc các từ khóa, từ ngữ nhạy cảm. 
+-	Temperature / creativity slider: Điều chỉnh mức độ thông minh của chatbot. Người dùng có thể tinh chỉnh bằng cách kéo thanh trượt (Slide bar).
+-	Response length control: Giới hạn độ dài của phản hồi.
+-	Clear chat / restart button: Xóa lịch sử đoạn hội thoại.
+
+# 2. Triển khai code chatbot
+## 2.1 Choose tech stack
+Ở blog này ta sẽ lựa chọn các công cụ chính sau để làm chatbot:
+
+Ngôn ngữ lập trình: Python
+-	Python được chọn làm ngôn ngữ chính để thiết kế chatbot dựa trên ưu điểm về cú pháp đơn giản, lượng thư viện lớn trong quá trình làm chatbot.
+
+Model framework: Hugging Face
+-	Hugging Face là nền tảng mã nguồn mở về AI, bao gồm các tập dữ liệu, mô hình AI lớn. Việc sử dụng Hugging Face sẽ giúp chúng ta dễ dàng tìm kiếm và sử dụng các mô hình AI phù hợp.
+
+Model deployment: Hugging Face Space
+-	Huggin Face Space hỗ trợ triển khai model đơn giản, phù hợp với các dự án nhỏ.
+
+Web deployment: Streamlit
+-	Streamlit được chọn để tạo Web UI cho chatbot nhờ vào khả năng tương thích với Python cao, dễ phát triển, phù hợp với dự án chatbot nhỏ và không yêu cầu kiến thức lớn về lập trình frontend.
+
+
+
 # 3.1. Recommended deployment platforms
 Khi triển khai một AI chatbot, việc chọn nền tảng deploy phù hợp ảnh hưởng trực tiếp đến độ dễ triển khai, chi phí và trải nghiệm demo. Hiện nay có nhiều lựa chọn khác nhau, mỗi nền tảng phù hợp với một mục tiêu riêng.
 Bảng dưới đây so sánh một số nền tảng phổ biến để deploy chatbot, từ demo học tập cho đến ứng dụng thực tế.
