@@ -1,4 +1,4 @@
-Blog này tập trung nói về cách tạo một chatbor và cách deploy chatbot.
+Blog này tập trung nói về cách tạo một chatbot và cách deploy chatbot.
 
 # 1. Giới thiệu chatbot và xác định phạm vi hoạt động
 ## 1.1 Giới thiệu chatbot? 
@@ -90,20 +90,62 @@ Với mục tiêu deploy chatbot miễn phí, dễ triển khai và có demo tr�
 Do đó, Hugging Face Spaces được chọn làm nền tảng deploy cho chatbot trong bài viết này.
 
 # 4. Những giới hạn của bản deploy miễn phí
-Mặc dù việc deploy chatbot bằng Hugging Face Spaces mang lại nhiều lợi ích cho demo và học tập, phiên bản miễn phí vẫn tồn tại một số giới hạn nhất định.
 
-Trước hết, **tốc độ phản hồi** của chatbot có thể chưa cao, đặc biệt khi mô hình cần tải lại hoặc khi có nhiều người truy cập cùng lúc. Điều này là bình thường với các nền tảng miễn phí, nơi tài nguyên CPU và bộ nhớ bị giới hạn.
+Việc deploy chatbot bằng các nền tảng miễn phí như Hugging Face Spaces mang lại rất nhiều lợi ích cho học tập và demo. Tuy nhiên, để sử dụng hiệu quả và không kỳ vọng sai, cần hiểu rõ những giới hạn thực tế của mô hình deploy này.
 
-Thứ hai, giới hạn tài nguyên là yếu tố cần cân nhắc. Các mô hình lớn hoặc yêu cầu GPU mạnh có thể không chạy ổn định trong môi trường miễn phí. Vì vậy, demo thường cần sử dụng các mô hình nhẹ hoặc giới hạn độ dài câu trả lời để đảm bảo chatbot không bị treo.
+**4.1. Giới hạn về hiệu năng và tốc độ phản hồi**
 
-Cuối cùng, bản deploy miễn phí không phù hợp cho tải lớn hoặc sử dụng thực tế quy mô cao. Đây không phải là môi trường dành cho sản phẩm thương mại, mà chủ yếu phục vụ mục đích thử nghiệm và trình diễn.
+Một trong những điểm dễ nhận thấy nhất khi sử dụng bản deploy miễn phí là tốc độ phản hồi không ổn định. Chatbot có thể trả lời chậm hơn so với khi chạy local hoặc trên hạ tầng mạnh, đặc biệt trong các trường hợp:
+- Mô hình cần thời gian tải lại sau khi không có người dùng (cold start)
+- Nhiều người truy cập cùng lúc
+- Câu hỏi yêu cầu sinh câu trả lời dài
+  
+Điều này xuất phát từ việc nền tảng miễn phí chỉ cung cấp tài nguyên CPU và bộ nhớ ở mức giới hạn. Tuy nhiên, với mục tiêu demo và học tập, độ trễ này vẫn ở mức chấp nhận được.
 
-Tuy nhiên, với phạm vi của blog này, các giới hạn trên là hoàn toàn chấp nhận được. Phiên bản deploy miễn phí vẫn đủ tốt cho:
-- Demo chatbot hoạt động thực tế
-- Học tập và nghiên cứu
+**4.2. Giới hạn tài nguyên tính toán**
+
+Các nền tảng miễn phí thường giới hạn:
+- Dung lượng RAM
+- Thời gian chạy liên tục
+- Khả năng sử dụng GPU
+  
+Do đó, chatbot deploy miễn phí **không phù hợp để chạy các mô hình quá lớn** hoặc xử lý tác vụ phức tạp trong thời gian dài. Trong thực tế, demo nên ưu tiên:
+- Mô hình nhẹ hoặc đã được tối ưu
+- Giới hạn số token sinh ra
+- Tránh xử lý song song nhiều yêu cầu
+  
+Đây cũng là lý do tại sao việc xác định phạm vi chatbot ngay từ đầu là rất quan trọng, như đã đề cập ở các phần trước.
+
+**4.3. Giới hạn về khả năng mở rộng**
+
+Bản deploy miễn phí không được thiết kế cho môi trường production. Khi số lượng người dùng tăng lên, chatbot có thể gặp các vấn đề như:
+- Phản hồi chậm dần
+- Lỗi timeout
+- Tạm thời không truy cập được
+  
+Vì vậy, chatbot deploy miễn phí **không phù hợp cho các hệ thống cần độ ổn định cao hoặc phục vụ số lượng lớn người dùng**, mà chủ yếu dùng cho mục đích trình diễn và thử nghiệm ý tưởng.
+
+**4.4. Giới hạn về bảo mật và kiểm soát hệ thống**
+
+Trong môi trường miễn phí, khả năng kiểm soát sâu về bảo mật, logging hay monitoring thường bị hạn chế. Nhà phát triển không thể:
+- Tùy chỉnh sâu hệ thống mạng
+- Thiết lập cơ chế bảo mật phức tạp
+- Theo dõi chi tiết hành vi người dùng
+  
+Do đó, chatbot demo nên tránh xử lý dữ liệu nhạy cảm và chỉ sử dụng cho các tình huống không yêu cầu bảo mật cao.
+
+**4.5. Vì sao các giới hạn này vẫn chấp nhận được?**
+
+Mặc dù tồn tại nhiều giới hạn, deploy chatbot miễn phí vẫn là lựa chọn rất hợp lý trong bối cảnh:
+- Demo cho giảng viên hoặc người xem
+- Học tập và nghiên cứu AI chatbot
 - Trình bày ý tưởng và kiến trúc hệ thống
+  
+Quan trọng hơn, việc làm việc trong môi trường có giới hạn giúp người phát triển **hiểu rõ hơn các ràng buộc thực tế**, từ đó có tư duy tốt hơn khi triển khai chatbot ở quy mô lớn trong tương lai.
 
-*Deploy là bước giúp chatbot chuyển từ một chương trình chạy local thành một sản phẩm có thể sử dụng ngay trên trình duyệt. Thông qua việc deploy chatbot bằng Gradio và Hugging Face Spaces, chúng ta có thể tạo ra một bản demo hoàn chỉnh mà không cần đầu tư hạ tầng phức tạp hay chi phí cao.
+Tóm lại, bản deploy miễn phí không nhằm thay thế hạ tầng production, mà đóng vai trò như một bước trung gian: giúp chatbot đi từ demo local sang một ứng dụng có thể sử dụng và chia sẻ ngay trên web.
+
+*Kết luận, Deploy là bước giúp chatbot chuyển từ một chương trình chạy local thành một sản phẩm có thể sử dụng ngay trên trình duyệt. Thông qua việc deploy chatbot bằng Gradio và Hugging Face Spaces, chúng ta có thể tạo ra một bản demo hoàn chỉnh mà không cần đầu tư hạ tầng phức tạp hay chi phí cao.
 Quan trọng hơn, quá trình deploy giúp người phát triển hiểu rõ hơn về vòng đời của một ứng dụng AI thực tế: từ thiết kế phạm vi, triển khai code, cho đến đưa sản phẩm lên môi trường cloud. Khi tư duy triển khai đã rõ ràng, việc mở rộng chatbot trong tương lai—chẳng hạn như cải thiện giao diện, tối ưu hiệu năng hoặc tích hợp dữ liệu riêng—sẽ trở nên dễ dàng hơn rất nhiều.*
 
 *Không cần hệ thống phức tạp hay ngân sách lớn, bất kỳ ai cũng có thể deploy một AI chatbot online nếu đi đúng hướng và chọn đúng công cụ.*
