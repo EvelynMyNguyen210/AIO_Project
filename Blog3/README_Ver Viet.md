@@ -89,6 +89,67 @@ Với mục tiêu deploy chatbot miễn phí, dễ triển khai và có demo tr�
   
 Do đó, Hugging Face Spaces được chọn làm nền tảng deploy cho chatbot trong bài viết này.
 
+## 3.2 Triển khai chatbot lên Hugging Face Spaces
+
+Sau khi đã chạy thử nghiệm thành công ở local, bước tiếp theo là đưa AI chatbot của chúng ta lên cloud để mọi người cùng trải nghiệm..
+
+### 3.2.1 Clone mã nguồn và chuẩn bị
+
+Để bắt đầu, hãy clone repository mẫu mà nhóm đã chuẩn bị sẵn. Repository này đã được cấu hình tối ưu để chạy trên Docker của Hugging Face.
+
+Sử dụng terminal và chạy lệnh:
+
+```bash
+git clone https://huggingface.co/spaces/cauhamau/chatbot_streamlit
+cd chatbot_streamlit
+```
+
+**Cấu trúc thư mục chính:**
+*   `src/streamlit_app.py`: Giao diện ứng dụng Streamlit.
+*   `src/llm.py`: Logic xử lý model LLM (tải model, generate text).
+*   `Dockerfile`: Tệp cấu hình môi trường server.
+*   `requirements.txt`: Danh sách các thư viện Python cần thiết (torch, transformers, bitsandbytes...).
+
+### 3.2.2 Tùy chỉnh
+
+Trước khi đẩy lên cloud, bạn có thể thay đổi một vài thông số để chatbot mang dấu ấn cá nhân hơn:
+
+1.  **Thay đổi Model**: Mặc định code đang sử dụng `Qwen/Qwen2.5-1.5B-Instruct`. Nếu bạn muốn chatbot phản hồi nhanh hơn (đánh đổi độ chính xác một chút), bạn có thể đổi sang bản nhẹ hơn là `0.5B` trong file `src/llm.py`:
+    ```python
+    # Trong src/llm.py hoặc src/streamlit_app.py
+    return Chatbot(model_name="Qwen/Qwen2.5-0.5B-Instruct", use_gpu=False)
+    ```
+
+2.  **Chỉnh sửa giao diện**: Mở file `src/streamlit_app.py` để đổi tên tiêu đề (`st.title`) hoặc thêm phần giới thiệu riêng của bạn ở sidebar.
+
+### 3.2.3 Các bước triển khai lên Hugging Face
+
+**Bước 1: Tạo New Space trên Hugging Face**
+1.  Truy cập [huggingface.co](https://huggingface.co/) và đăng nhập.
+2.  Nhấn vào nút **New** (góc trên bên phải) -> chọn **Space**.
+3.  Đặt tên cho Space (ví dụ: `my-cool-chatbot`).
+4.  **Select the Space SDK**: Chọn **Docker**. Sau đó, tại phần **Docker template**, hãy chọn **Streamlit** (vì mã nguồn của chúng ta được xây dựng dựa trên framework này). Việc dùng Docker giúp đảm bảo các thư viện nặng như PyTorch chạy ổn định nhất.
+5.  **Hardware**: Chọn **CPU basic** (Miễn phí) hoặc nâng cấp GPU nếu bạn có kinh phí.
+6.  Nhấn **Create Space**.
+
+**Bước 2: Upload mã nguồn**
+Hugging Face sẽ hướng dẫn bạn cách đẩy code lên. Bạn có 2 cách chính:
+
+*   **Cách A: Dùng Git (Khuyên dùng)**: Kết nối folder hiện tại với Space mới tạo và push code.
+    ```bash
+    git remote set-url origin https://huggingface.co/spaces/YOUR_USERNAME/YOUR_SPACE_NAME
+    git push origin main
+    ```
+*   **Cách B: Upload thủ công**: Vào tab **Files** trên Space, chọn **Add file** -> **Upload files** và kéo thả toàn bộ thư mục `src`, `Dockerfile`, `requirements.txt` vào.
+
+**Bước 3: Chờ đợi và Trải nghiệm**
+Sau khi đẩy code lên, Hugging Face sẽ tự động nhận diện `Dockerfile` và bắt đầu quá trình **Building**.
+*   Bạn có thể theo dõi tiến trình ở tab **Logs**. Quá trình cài đặt thư viện và tải model có thể mất khoảng 3-5 phút ở lần đầu tiên.
+*   Khi trạng thái chuyển sang màu xanh **Running**, chatbot của bạn đã sẵn sàng!
+
+---
+*Mẹo nhỏ: Nếu ứng dụng bị lỗi "Out of Memory", hãy cân nhắc sử dụng model nhỏ hơn (như Qwen 0.5B) hoặc sử dụng kỹ thuật Quantization 4-bit (đã được cấu hình sẵn trong `llm.py`).*
+
 # 4. Những giới hạn của bản deploy miễn phí
 
 Việc deploy chatbot bằng các nền tảng miễn phí như Hugging Face Spaces mang lại rất nhiều lợi ích cho học tập và demo. Tuy nhiên, để sử dụng hiệu quả và không kỳ vọng sai, cần hiểu rõ những giới hạn thực tế của mô hình deploy này.
