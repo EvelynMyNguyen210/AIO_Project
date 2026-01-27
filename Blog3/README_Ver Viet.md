@@ -423,6 +423,12 @@ Trước khi đẩy lên cloud, bạn có thể thay đổi một vài thông s�
 ### 3.2.3 Các bước triển khai lên Hugging Face
 
 **Bước 1: Tạo New Space trên Hugging Face**
+
+<p align="center">
+  <img src="images\blog_3_chon_cau_hinh.jpeg" style="margin: 0 auto; display: block;"><br/>
+  <em>Hình 3.2.2 Tạo New Space trên Hugging Face</em>
+</p>
+
 1.  Truy cập [huggingface.co](https://huggingface.co/) và đăng nhập.
 2.  Nhấn vào nút **New** (góc trên bên phải) -> chọn **Space**.
 3.  Đặt tên cho Space (ví dụ: `my-cool-chatbot`).
@@ -440,16 +446,26 @@ Hugging Face sẽ hướng dẫn bạn cách đẩy code lên. Bạn có 2 cách
     ```
 *   **Cách B: Upload thủ công**: Vào tab **Files** trên Space, chọn **Add file** -> **Upload files** và kéo thả toàn bộ thư mục `src`, `Dockerfile`, `requirements.txt` vào.
 
+<p align="center">
+  <img src="images\blog_3_sau_khi_upload_file_len_hugging_face.jpeg" style="margin: 0 auto; display: block;"><br/>
+  <em>Hình 3.2.3 Code repository sau khi upload code lên Hugging Face Space</em>
+</p>
+
 **Bước 3: Chờ đợi và Trải nghiệm**
 Sau khi đẩy code lên, Hugging Face sẽ tự động nhận diện `Dockerfile` và bắt đầu quá trình **Building**.
 
 <p align="center">
   <img src="images\blog3_huggingface_building.jpeg" style="margin: 0 auto; display: block;"><br/>
-  <em>Hình 3.2.2 AI chatbot đang trong quá trình deploy trên HuggingFace</em>
+  <em>Hình 3.2.4 AI chatbot đang trong quá trình deploy trên HuggingFace</em>
 </p>
 
 *   Bạn có thể theo dõi tiến trình ở tab **Logs**. Quá trình cài đặt thư viện và tải model có thể mất khoảng 3-5 phút ở lần đầu tiên.
 *   Khi trạng thái chuyển sang màu xanh **Running**, chatbot của bạn đã sẵn sàng!
+
+<p align="center">
+  <img src="images\blog_3_chat_bot_da_xong.jpeg" style="margin: 0 auto; display: block;"><br/>
+  <em>Hình 3.2.5 AI chatbot đã sẵn sàng để trải nghiệm</em>
+</p>
 
 ---
 *Mẹo nhỏ: Nếu ứng dụng bị lỗi "Out of Memory", hãy cân nhắc sử dụng model nhỏ hơn (như Qwen 0.5B) hoặc sử dụng kỹ thuật Quantization 4-bit (đã được cấu hình sẵn trong `llm.py`).*
