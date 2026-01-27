@@ -6,7 +6,7 @@ Blog này tập trung nói về cách tạo một chatbot và cách deploy chatb
 Ở bài viết này, ta tạo ra một chatbot có thể trả lời các câu hỏi mà người dùng nhập vào. Chatbot sẽ được triển khai trên server, không phải trên máy tính cá nhân, do đó người dùng có thể truy cập thông qua trình duyệt và chatbot luôn sẵn sàng trả lời bất cứ lúc nào. 
 
 <p align="center">
-  <img src="images\blog3_graph_part1.png" style="margin: 0 auto; display: block;"><br/>
+  <img src="images\blog_3_graph_part1.png" style="margin: 0 auto; display: block;"><br/>
   <em>Hình 1.1. Sơ đồ minh họa</em>
 </p>
 
@@ -25,7 +25,7 @@ Vì blog này tập trung vào việc xây dựng một chatbot đơn giản và
 Giới hạn đầu vào của chatbot là câu hỏi dạng chuỗi để tiết kiệm thời gian phản hồi. Phạm vi câu hỏi không giới hạn.
 
 **Customizable system prompt / personality:** 
-(Phần này có thêm ảnh đính kèm?)
+
 Đây là các tính năng được tích hợp trên Web UI, người dùng có thể tùy chỉnh các thông số để phản hồi của chatbot đa dạng hơn: 
 -	Multilingual support: Người dùng có thể input câu hỏi dạng song ngữ (cụ thể là tiếng Anh hoặc tiếng Việt)
 -	Basic safety / content filtering: Lọc các từ khóa, từ ngữ nhạy cảm. 
