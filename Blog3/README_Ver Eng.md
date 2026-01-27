@@ -21,10 +21,10 @@ In this blog, we develop a chatbot that is able to answer user input. The chatbo
 
 Because this blog focus on building a simple web-based chatbot, its features will be limited to fit the response efficiency. 
 
-**Only accept text input**
+**Only accept text input:**
 The input is limited to string input to reduce the inference time. User topic can be widespread.
 
-**Customizable system prompt / personality**
+**Customizable system prompt / personality:**
 Below are the available features integrated on the Web UI, user can config these parameters to customize the chatbot response:
 -	Multilingual support: User can input question in English or Vietnamese.
 -	Basic safety / content filtering: Filters out sensitive keywords, contents. 
