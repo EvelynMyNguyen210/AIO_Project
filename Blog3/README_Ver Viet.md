@@ -50,6 +50,298 @@ Giới hạn đầu vào của chatbot là câu hỏi dạng chuỗi để tiế
 **Web deployment:** Streamlit
 -	Streamlit được chọn để tạo Web UI cho chatbot nhờ vào khả năng tương thích với Python cao, dễ phát triển, phù hợp với dự án chatbot nhỏ và không yêu cầu kiến thức lớn về lập trình frontend.
 
+## 2.2 Core code structure – Cấu trúc code chatbot
+
+Phần này sẽ đi **trực tiếp vào code của project**, giải thích từng thành phần chính để thấy rõ chatbot được xây dựng như thế nào, từ giao diện đến AI model.
+
+Toàn bộ project có cấu trúc như sau:
+
+```
+├── requirements.txt        # Danh sách thư viện cần cài
+└── src
+    ├── app.py              # Giao diện chatbot + logic xử lý chat
+    └── llm.py              # Load LLM và sinh câu trả lời
+
+```
+
+---
+
+### Giao diện chatbot (app.py)
+
+Giao diện chatbot được xây dựng bằng **Streamlit**, với mục tiêu:
+- Đơn giản
+- Dễ dùng
+- Dễ deploy
+
+Giao diện chỉ gồm 2 phần chính:
+
+```
+[ User input box ]
+[ Bot response area ]
+```
+
+Ngoài ra có thêm sidebar để cấu hình chatbot.
+
+---
+
+
+**Cache model để tránh load lại**
+
+Model AI chỉ được load **một lần duy nhất** khi user truy cập vào trang web nhờ `@st.cache_resource`:
+
+```python
+@st.cache_resource
+def get_chatbot():
+    return Chatbot(model_name="Qwen/Qwen2.5-1.5B-Instruct", use_gpu=False)
+```
+
+*Điều này giúp ứng dụng chạy mượt hơn và tiết kiệm tài nguyên tránh việc load lại model nhiều lần.*
+
+---
+
+**Quản lý trạng thái chat (Session State)**
+
+Streamlit không tự lưu trạng thái giữa các lần tương tác, vì vậy lịch sử chat được lưu bằng `st.session_state`. Khi ứng dụng khởi động, nếu chưa có lịch sử chat, hệ thống sẽ khởi tạo sẵn một **system prompt**:
+
+```python
+def initialize_session_state():
+    if CHAT_HISTORY_KEY not in st.session_state:
+        st.session_state[CHAT_HISTORY_KEY] = [
+            {
+                "role": "system",
+                "content": "You are a helpful AI assistant. Your answers are concise and to the point."
+            }
+        ]
+```
+
+*System prompt này đóng vai trò định hình tính cách và hành vi của chatbot.*
+
+---
+
+**Hiển thị lịch sử chat**
+
+Giao diện hội thoại sẽ được render mỗi lần người dùng tương tác:
+
+```python
+def display_chat_history():
+    for message in st.session_state[CHAT_HISTORY_KEY]:
+        if message["role"] != "system":
+            with st.chat_message(message["role"]):
+                st.markdown(message["content"])
+```
+
+Mỗi message đều có `role` (`user` hoặc `assistant`), giúp Streamlit hiển thị đúng vai trò hội thoại.
+
+---
+
+**Xử lý input và sinh câu trả lời**
+
+Khi người dùng nhập câu hỏi, toàn bộ luồng xử lý diễn ra trong hàm `handle_user_input()`.
+
+Luồng logic cụ thể:
+
+1. Nhận input từ người dùng
+2. Lưu input vào lịch sử chat
+3. Giới hạn số lượt chat được nhớ
+4. Gửi lịch sử chat cho AI model
+5. Nhận và hiển thị câu trả lời
+
+```python
+if user_input := st.chat_input("Ask something..."):
+```
+
+Sau khi thêm câu hỏi vào lịch sử chat, hệ thống sẽ **cắt bớt lịch sử cũ** nếu vượt quá số lượt cho phép:
+
+```python
+if len(st.session_state[CHAT_HISTORY_KEY]) > (max_history * 2) + 1:
+    st.session_state[CHAT_HISTORY_KEY] = [
+        st.session_state[CHAT_HISTORY_KEY][0]
+    ] + st.session_state[CHAT_HISTORY_KEY][-(max_history * 2 + 1):]
+```
+
+Điều này giúp:
+- Giảm độ dài prompt
+- Tăng tốc độ phản hồi
+- Tránh quá tải bộ nhớ
+
+*Vì làm việc trên các môi trường miễn phí thì tài nguyên rất hạn chết nên chúng ta chỉ nên giới hạn ghi nhớ từ 1-10 đoạn chat trước đó.*
+
+---
+
+**Sidebar cấu hình chatbot**
+
+Người dùng có thể điều chỉnh cấu hình cơ bản của chatbot trực tiếp trên giao diện:
+
+- **Temperature**: độ sáng tạo
+- **Chat memory**: số lượt chat được nhớ
+- **Max tokens**: độ dài câu trả lời
+- **Clear chat**: reset hội thoại
+
+```python
+temperature = st.slider("Temperature", 0.0, 1.0, 0.7, 0.1)
+max_history = st.selectbox("Chat memory", range(1, 11), index=2)
+max_tokens = st.selectbox("Max Tokens", [256, 512, 1024], index=1)
+```
+
+---
+
+**AI Model & Logic sinh câu trả lời (llm.py)**
+
+Phần xử lý AI được tách riêng trong file `llm.py` thông qua class Chatbot. Việc tách biệt này giúp code rõ ràng hơn, dễ bảo trì, đồng thời cho phép thay đổi mô hình AI mà không ảnh hưởng đến phần giao diện hay luồng chat.
+
+---
+
+### 🔹 Load model Qwen
+
+Model sử dụng trong project là:
+
+> **Qwen/Qwen2.5-1.5B-Instruct**
+
+Model được load ở chế độ CPU để dễ chạy local và deploy lên các nền tảng miễn phí với tài nguyên hạn chế:
+
+```python
+self.model = AutoModelForCausalLM.from_pretrained(
+    self.model_name,
+    device_map="cpu",
+    torch_dtype=torch.float32,
+    low_cpu_mem_usage=True
+)
+```
+
+Tokenizer cũng được load tương ứng:
+
+```python
+self.tokenizer = AutoTokenizer.from_pretrained(
+    self.model_name,
+    return_token_type_ids=False
+)
+```
+
+---
+
+**Sinh câu trả lời từ lịch sử chat**
+
+Hàm `generate_response()` nhận vào toàn bộ lịch sử chat và sinh câu trả lời.
+ 
+**Bước 1: Ghép lịch sử chat thành prompt**
+
+```python
+text = self.tokenizer.apply_chat_template(
+    chat_history,
+    tokenize=False,
+    add_generation_prompt=True
+)
+```
+
+**Bước 2: Tokenizer**
+
+```python
+model_inputs = self.tokenizer([text], return_tensors="pt").to(self.device)
+```
+
+**Bước 3: Generate output**
+
+```python
+generated_ids = self.model.generate(
+    **model_inputs,
+    max_new_tokens=max_tokens,
+    temperature=temperature,
+    do_sample=True,
+    pad_token_id=self.tokenizer.eos_token_id
+)
+```
+
+**Bước 4: Decode token thành text**
+
+```python
+response = self.tokenizer.batch_decode(
+    generated_ids,
+    skip_special_tokens=True
+)[0]
+```
+
+Kết quả cuối cùng là một câu trả lời tự nhiên, được hiển thị trực tiếp lên giao diện.
+
+---
+
+## 2.3 Testing locally
+
+Sau khi hoàn thành code, bước tiếp theo là **chạy thử chatbot trên máy local** trước khi deploy.
+
+---
+
+**Cài đặt môi trường**
+
+Cài đặt thư viện cần thiết:
+
+```bash
+pip install -r requirements.txt
+```
+
+Chạy ứng dụng:
+
+```bash
+streamlit run streamlit_app.py
+```
+
+Mở trình duyệt tại:
+
+```
+http://localhost:8501
+```
+
+---
+
+**Kiểm tra các chức năng chính**
+
+Sau khi chatbot đã chạy ổn định, bước tiếp theo là kiểm tra các chức năng cốt lõi để đảm bảo hệ thống hoạt động đúng như kỳ vọng, không chỉ “trả lời được” mà còn trả lời đúng và nhất quán.
+
+Một số điểm cần kiểm tra:
+
+- **Chat nhiều lượt liên tiếp:**
+
+  - Thực hiện các cuộc hội thoại dài để kiểm tra khả năng ghi nhớ ngữ cảnh (memory). Chatbot cần hiểu được những gì đã nói trước đó, thay vì phản hồi như mỗi câu hỏi là một phiên mới.
+
+- **Điều chỉnh temperature**
+
+  - Thay đổi giá trị temperature để quan sát mức độ sáng tạo của câu trả lời:
+
+  - Giá trị thấp → trả lời ổn định, ít biến thể
+
+  - Giá trị cao → trả lời linh hoạt, sáng tạo hơn (nhưng dễ lan man)
+
+- **Thay đổi max_tokens**
+
+  - Dùng để kiểm soát độ dài phản hồi, tránh tình trạng chatbot trả lời quá ngắn hoặc quá dài so với mong muốn.
+
+- **Clear chat**
+  - Kiểm tra chức năng xóa lịch sử hội thoại
+
+  - Lịch sử chat được reset hoàn toàn
+
+  - System prompt được khởi tạo lại đúng cách
+
+  - Điều này giúp đảm bảo chatbot không “mang ký ức cũ” sang một phiên mới.
+
+<p align="center">
+  <img src="images\chatbot_ui_local.png" style="margin: 0 auto; display: block;"><br/>
+  <em>Hình 2.1. Giao diện của một AI chatbot đơn giản</em>
+</p>
+
+Kiểm tra tốc độ phản hồi trên CPU, đánh giá thời gian phản hồi khi chạy trên CPU để xem chatbot có đáp ứng được nhu cầu sử dụng thực tế hay không, đặc biệt trong môi trường không có GPU.
+
+Bước kiểm tra này giúp phát hiện sớm các vấn đề về logic, hiệu năng và trải nghiệm người dùng, trước khi chatbot được đưa vào demo hoặc triển khai thực tế.
+
+---
+
+**Lưu ý khi test local**
+
+- Lần load model đầu tiên sẽ khá chậm
+- Chạy CPU không phù hợp với các model có tham số lớn
+- Không nên test nhiều user cùng lúc
+
+*Tuy nhiên, với mục tiêu **demo và học tập**, cấu hình này là **hoàn toàn phù hợp** trước khi đưa chatbot lên cloud.*
+
 # 3.1. Recommended deployment platforms
 Khi triển khai một AI chatbot, việc chọn nền tảng deploy phù hợp ảnh hưởng trực tiếp đến độ dễ triển khai, chi phí và trải nghiệm demo. Hiện nay có nhiều lựa chọn khác nhau, mỗi nền tảng phù hợp với một mục tiêu riêng.
 Bảng dưới đây so sánh một số nền tảng phổ biến để deploy chatbot, từ demo học tập cho đến ứng dụng thực tế.
