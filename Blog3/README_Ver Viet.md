@@ -444,8 +444,7 @@ Hugging Face sẽ hướng dẫn bạn cách đẩy code lên. Bạn có 2 cách
 Sau khi đẩy code lên, Hugging Face sẽ tự động nhận diện `Dockerfile` và bắt đầu quá trình **Building**.
 
 <p align="center">
-  <img src="images\blog3_huggingface_building
-.jpeg" style="margin: 0 auto; display: block;"><br/>
+  <img src="images\blog3_huggingface_building.jpeg" style="margin: 0 auto; display: block;"><br/>
   <em>Hình 3.2.2 AI chatbot đang trong quá trình deploy trên HuggingFace</em>
 </p>
 
