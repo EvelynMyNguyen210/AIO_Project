@@ -390,6 +390,11 @@ Sau khi đã chạy thử nghiệm thành công ở local, bước tiếp theo l
 
 Để bắt đầu, hãy clone repository mẫu mà nhóm đã chuẩn bị sẵn. Repository này đã được cấu hình tối ưu để chạy trên Docker của Hugging Face.
 
+<p align="center">
+  <img src="images\blog3_chatbot_repo.jpeg" style="margin: 0 auto; display: block;"><br/>
+  <em>Hình 3.2.1 AI chatbot repository mẫu</em>
+</p>
+
 Sử dụng terminal và chạy lệnh:
 
 ```bash
@@ -437,6 +442,13 @@ Hugging Face sẽ hướng dẫn bạn cách đẩy code lên. Bạn có 2 cách
 
 **Bước 3: Chờ đợi và Trải nghiệm**
 Sau khi đẩy code lên, Hugging Face sẽ tự động nhận diện `Dockerfile` và bắt đầu quá trình **Building**.
+
+<p align="center">
+  <img src="images\blog3_huggingface_building
+.jpeg" style="margin: 0 auto; display: block;"><br/>
+  <em>Hình 3.2.2 AI chatbot đang trong quá trình deploy trên HuggingFace</em>
+</p>
+
 *   Bạn có thể theo dõi tiến trình ở tab **Logs**. Quá trình cài đặt thư viện và tải model có thể mất khoảng 3-5 phút ở lần đầu tiên.
 *   Khi trạng thái chuyển sang màu xanh **Running**, chatbot của bạn đã sẵn sàng!
 
