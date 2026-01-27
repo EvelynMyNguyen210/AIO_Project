@@ -55,16 +55,15 @@ Khi triển khai một AI chatbot, việc chọn nền tảng deploy phù hợp 
 Bảng dưới đây so sánh một số nền tảng phổ biến để deploy chatbot, từ demo học tập cho đến ứng dụng thực tế.
 | Platform                | Hugging Face Spaces        | Streamlit Cloud    | Render           | Cloudflare Workers       | Vercel                   |
 | ----------------------- | -------------------------- | ------------------ | ---------------- | ------------------------ | ------------------------ |
-| **Mức độ dễ dùng**      | ⭐⭐⭐⭐⭐ Rất dễ               | ⭐⭐⭐⭐ Dễ            | ⭐⭐⭐ Trung bình   | ⭐⭐ Khó                   | ⭐⭐⭐ Trung bình           |
 | **Hỗ trợ UI chatbot**   | Có sẵn (Gradio, Streamlit) | Có sẵn (Streamlit) | Không có sẵn     | Không có                 | Không có                 |
 | **Triển khai model AI** | Rất phù hợp cho ML/LLM     | Phù hợp demo nhẹ   | Phải tự cấu hình | Không phù hợp model nặng | Không phù hợp model nặng |
 | **Thiết lập ban đầu**   | Tạo Space, upload code     | Kết nối GitHub     | Cấu hình service | Viết worker script       | Cấu hình project         |
 | **Chi phí**             | Miễn phí cho demo          | Miễn phí giới hạn  | Có free tier     | Miễn phí theo request    | Miễn phí giới hạn        |
 | **Hiệu năng**           | Trung bình                 | Trung bình         | Tốt              | Rất tốt (API)            | Rất tốt (frontend/API)   |
 | **Mục đích phù hợp**    | Demo, học tập, showcase AI | Demo nhanh         | App backend nhỏ  | API backend              | Web app + API            |
-| **Khả năng chia sẻ**    | Link public ngay           | Link public        | Link public      | Link public              | Link public              |
 
 **Nhận xét nhanh từng nền tảng**
+
 **Hugging Face Spaces**
 Là lựa chọn phù hợp nhất cho demo chatbot AI vì hỗ trợ trực tiếp các mô hình học máy và có sẵn UI chat. Phù hợp cho sinh viên, blog kỹ thuật và showcase project.
 
@@ -87,7 +86,7 @@ Với mục tiêu deploy chatbot miễn phí, dễ triển khai và có demo tr�
 - Có thể chạy trực tiếp mô hình AI
 - Phù hợp để chia sẻ link demo trong blog và GitHub README
   
-Do đó, Hugging Face Spaces được chọn làm nền tảng deploy cho chatbot trong bài viết này.
+Do đó, **Hugging Face Spaces** được chọn làm nền tảng deploy cho chatbot trong bài viết này.
 
 ## 3.2 Triển khai chatbot lên Hugging Face Spaces
 
@@ -154,7 +153,7 @@ Sau khi đẩy code lên, Hugging Face sẽ tự động nhận diện `Dockerfi
 
 Việc deploy chatbot bằng các nền tảng miễn phí như Hugging Face Spaces mang lại rất nhiều lợi ích cho học tập và demo. Tuy nhiên, để sử dụng hiệu quả và không kỳ vọng sai, cần hiểu rõ những giới hạn thực tế của mô hình deploy này.
 
-**4.1. Giới hạn về hiệu năng và tốc độ phản hồi**
+## 4.1. Giới hạn về hiệu năng và tốc độ phản hồi
 
 Một trong những điểm dễ nhận thấy nhất khi sử dụng bản deploy miễn phí là tốc độ phản hồi không ổn định. Chatbot có thể trả lời chậm hơn so với khi chạy local hoặc trên hạ tầng mạnh, đặc biệt trong các trường hợp:
 - Mô hình cần thời gian tải lại sau khi không có người dùng (cold start)
@@ -163,7 +162,7 @@ Một trong những điểm dễ nhận thấy nhất khi sử dụng bản depl
   
 Điều này xuất phát từ việc nền tảng miễn phí chỉ cung cấp tài nguyên CPU và bộ nhớ ở mức giới hạn. Tuy nhiên, với mục tiêu demo và học tập, độ trễ này vẫn ở mức chấp nhận được.
 
-**4.2. Giới hạn tài nguyên tính toán**
+## 4.2. Giới hạn tài nguyên tính toán
 
 Các nền tảng miễn phí thường giới hạn:
 - Dung lượng RAM
@@ -177,7 +176,7 @@ Do đó, chatbot deploy miễn phí **không phù hợp để chạy các mô h�
   
 Đây cũng là lý do tại sao việc xác định phạm vi chatbot ngay từ đầu là rất quan trọng, như đã đề cập ở các phần trước.
 
-**4.3. Giới hạn về khả năng mở rộng**
+## 4.3. Giới hạn về khả năng mở rộng
 
 Bản deploy miễn phí không được thiết kế cho môi trường production. Khi số lượng người dùng tăng lên, chatbot có thể gặp các vấn đề như:
 - Phản hồi chậm dần
@@ -186,7 +185,7 @@ Bản deploy miễn phí không được thiết kế cho môi trường product
   
 Vì vậy, chatbot deploy miễn phí **không phù hợp cho các hệ thống cần độ ổn định cao hoặc phục vụ số lượng lớn người dùng**, mà chủ yếu dùng cho mục đích trình diễn và thử nghiệm ý tưởng.
 
-**4.4. Giới hạn về bảo mật và kiểm soát hệ thống**
+## 4.4. Giới hạn về bảo mật và kiểm soát hệ thống
 
 Trong môi trường miễn phí, khả năng kiểm soát sâu về bảo mật, logging hay monitoring thường bị hạn chế. Nhà phát triển không thể:
 - Tùy chỉnh sâu hệ thống mạng
@@ -195,7 +194,7 @@ Trong môi trường miễn phí, khả năng kiểm soát sâu về bảo mật
   
 Do đó, chatbot demo nên tránh xử lý dữ liệu nhạy cảm và chỉ sử dụng cho các tình huống không yêu cầu bảo mật cao.
 
-**4.5. Vì sao các giới hạn này vẫn chấp nhận được?**
+## 4.5. Vì sao các giới hạn này vẫn chấp nhận được?
 
 Mặc dù tồn tại nhiều giới hạn, deploy chatbot miễn phí vẫn là lựa chọn rất hợp lý trong bối cảnh:
 - Demo cho giảng viên hoặc người xem
