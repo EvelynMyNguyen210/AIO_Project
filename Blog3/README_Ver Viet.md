@@ -344,7 +344,7 @@ Bước kiểm tra này giúp phát hiện sớm các vấn đề về logic, hi
 
 *Tuy nhiên, với mục tiêu **demo và học tập**, cấu hình này là **hoàn toàn phù hợp** trước khi đưa chatbot lên cloud.*
 
-# 3.1. Recommended deployment platforms
+# 3.1. Đề xuất các nền tảng triển khai 
 Khi triển khai một AI chatbot, việc chọn nền tảng deploy phù hợp ảnh hưởng trực tiếp đến độ dễ triển khai, chi phí và trải nghiệm demo. Hiện nay có nhiều lựa chọn khác nhau, mỗi nền tảng phù hợp với một mục tiêu riêng.
 Bảng dưới đây so sánh một số nền tảng phổ biến để deploy chatbot, từ demo học tập cho đến ứng dụng thực tế.
 | Platform                | Hugging Face Spaces        | Streamlit Cloud    | Render           | Cloudflare Workers       | Vercel                   |
@@ -355,6 +355,9 @@ Bảng dưới đây so sánh một số nền tảng phổ biến để deploy 
 | **Chi phí**             | Miễn phí cho demo          | Miễn phí giới hạn  | Có free tier     | Miễn phí theo request    | Miễn phí giới hạn        |
 | **Hiệu năng**           | Trung bình                 | Trung bình         | Tốt              | Rất tốt (API)            | Rất tốt (frontend/API)   |
 | **Mục đích phù hợp**    | Demo, học tập, showcase AI | Demo nhanh         | App backend nhỏ  | API backend              | Web app + API            |
+<p align="center">
+  <em>Bảng 3.1 Bảng so sánh các nền tảng triển khai</em>
+</p>
 
 **Nhận xét nhanh từng nền tảng**
 
@@ -380,7 +383,7 @@ Với mục tiêu deploy chatbot miễn phí, dễ triển khai và có demo tr�
 - Có thể chạy trực tiếp mô hình AI
 - Phù hợp để chia sẻ link demo trong blog và GitHub README
   
-Do đó, **Hugging Face Spaces** được chọn làm nền tảng deploy cho chatbot trong bài viết này.
+Do đó, **Hugging Face Spaces** được chọn làm nền tảng triển khai cho chatbot trong bài viết này.
 
 ## 3.2 Triển khai chatbot lên Hugging Face Spaces
 
