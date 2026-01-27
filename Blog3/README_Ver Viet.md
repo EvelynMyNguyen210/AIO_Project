@@ -332,6 +332,8 @@ Kiểm tra tốc độ phản hồi trên CPU, đánh giá thời gian phản h�
 
 Bước kiểm tra này giúp phát hiện sớm các vấn đề về logic, hiệu năng và trải nghiệm người dùng, trước khi chatbot được đưa vào demo hoặc triển khai thực tế.
 
+*Full source code tại **[Github](https://github.com/EvelynMyNguyen210/AIO_Project)***
+
 ---
 
 **Lưu ý khi test local**
