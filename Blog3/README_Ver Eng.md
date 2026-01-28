@@ -49,6 +49,295 @@ In this blog, we will select these tech stack for the chatbot:
 **Web deployment:** Streamlit
 -	Streamlit is used to make Web UI for chatbot thanks to its high adaptability with python, easy to develop and maintain, which fits well with small chatbot project and does not require much knowledge in frontend programming.
 
+## 2.2 Core code structure – Chatbot code structure
+
+We go **directly into the project code**, explaining each main component to clearly show how the chatbot is built, from the user interface to the AI model.
+
+The overall project structure is as follows:
+
+```
+├── requirements.txt        # List of required libraries
+└── src
+    ├── app.py              # Chatbot UI + chat handling logic
+    └── llm.py              # Load LLM and generate responses
+```
+
+---
+
+### Chatbot interface (app.py)
+
+The chatbot interface is built using **Streamlit**, with the following goals:
+- Simple
+- Easy to use
+- Easy to deploy
+
+The interface consists of only two main parts:
+
+```
+[ User input box ]
+[ Bot response area ]
+```
+
+In addition, there is a sidebar for chatbot configuration.
+
+---
+
+**Caching the model to avoid reloading**
+
+The AI model is loaded **only once** when the user accesses the web page thanks to `@st.cache_resource`:
+
+```python
+@st.cache_resource
+def get_chatbot():
+    return Chatbot(model_name="Qwen/Qwen2.5-1.5B-Instruct", use_gpu=False)
+```
+
+*This helps the application run more smoothly and saves resources by avoiding loading the model multiple times.*
+
+---
+
+**Chat state management (Session State)**
+
+Streamlit does not automatically persist state between interactions, so chat history is stored using `st.session_state`. When the application starts, if no chat history exists, the system initializes a **system prompt**:
+
+```python
+def initialize_session_state():
+    if CHAT_HISTORY_KEY not in st.session_state:
+        st.session_state[CHAT_HISTORY_KEY] = [
+            {
+                "role": "system",
+                "content": "You are a helpful AI assistant. Your answers are concise and to the point."
+            }
+        ]
+```
+
+*This system prompt defines the personality and behavior of the chatbot.*
+
+---
+
+**Displaying chat history**
+
+The conversation UI is re-rendered every time the user interacts:
+
+```python
+def display_chat_history():
+    for message in st.session_state[CHAT_HISTORY_KEY]:
+        if message["role"] != "system":
+            with st.chat_message(message["role"]):
+                st.markdown(message["content"])
+```
+
+Each message has a `role` (`user` or `assistant`), allowing Streamlit to display the correct conversational role.
+
+---
+
+**Handling user input and generating responses**
+
+When the user enters a question, the entire processing flow happens inside the `handle_user_input()` function.
+
+Detailed logic flow:
+
+1. Receive input from the user  
+2. Save input to chat history  
+3. Limit the number of remembered chat turns  
+4. Send chat history to the AI model  
+5. Receive and display the response  
+
+```python
+if user_input := st.chat_input("Ask something..."):
+```
+
+After adding the user question to the chat history, the system **trims older messages** if the maximum allowed turns are exceeded:
+
+```python
+if len(st.session_state[CHAT_HISTORY_KEY]) > (max_history * 2) + 1:
+    st.session_state[CHAT_HISTORY_KEY] = [
+        st.session_state[CHAT_HISTORY_KEY][0]
+    ] + st.session_state[CHAT_HISTORY_KEY][-(max_history * 2 + 1):]
+```
+
+This helps to:
+- Reduce prompt length
+- Improve response speed
+- Avoid memory overload
+
+*Since free-tier environments have very limited resources, we should only allow memory for 1–10 previous chat turns.*
+
+---
+
+**Chatbot configuration sidebar**
+
+Users can adjust basic chatbot settings directly from the UI:
+
+- **Temperature**: creativity level  
+- **Chat memory**: number of remembered chat turns  
+- **Max tokens**: response length  
+- **Clear chat**: reset the conversation  
+
+```python
+temperature = st.slider("Temperature", 0.0, 1.0, 0.7, 0.1)
+max_history = st.selectbox("Chat memory", range(1, 11), index=2)
+max_tokens = st.selectbox("Max Tokens", [256, 512, 1024], index=1)
+```
+
+---
+
+**AI model & response generation logic (llm.py)**
+
+AI processing is separated into the `llm.py` file via the `Chatbot` class. This separation makes the code clearer, easier to maintain, and allows changing the AI model without affecting the UI or chat flow.
+
+---
+
+**Loading the Qwen model**
+
+The model used in this project is:
+
+> **Qwen/Qwen2.5-1.5B-Instruct**
+
+The model is loaded in CPU mode to allow easy local execution and deployment on free platforms with limited resources:
+
+```python
+self.model = AutoModelForCausalLM.from_pretrained(
+    self.model_name,
+    device_map="cpu",
+    torch_dtype=torch.float32,
+    low_cpu_mem_usage=True
+)
+```
+
+The corresponding tokenizer is also loaded:
+
+```python
+self.tokenizer = AutoTokenizer.from_pretrained(
+    self.model_name,
+    return_token_type_ids=False
+)
+```
+
+---
+
+**Generating responses from chat history**
+
+The `generate_response()` function takes the entire chat history and generates a response.
+
+**Step 1: Combine chat history into a prompt**
+
+```python
+text = self.tokenizer.apply_chat_template(
+    chat_history,
+    tokenize=False,
+    add_generation_prompt=True
+)
+```
+
+**Step 2: Tokenization**
+
+```python
+model_inputs = self.tokenizer([text], return_tensors="pt").to(self.device)
+```
+
+**Step 3: Generate output**
+
+```python
+generated_ids = self.model.generate(
+    **model_inputs,
+    max_new_tokens=max_tokens,
+    temperature=temperature,
+    do_sample=True,
+    pad_token_id=self.tokenizer.eos_token_id
+)
+```
+
+**Step 4: Decode tokens into text**
+
+```python
+response = self.tokenizer.batch_decode(
+    generated_ids,
+    skip_special_tokens=True
+)[0]
+```
+
+The final result is a natural-language response displayed directly in the chatbot UI.
+
+---
+
+## 2.3 Testing locally
+
+After completing the code, the next step is to **run the chatbot locally** before deploying it.
+
+---
+
+**Environment setup**
+
+Install the required libraries:
+
+```bash
+pip install -r requirements.txt
+```
+
+Run the application:
+
+```bash
+streamlit run streamlit_app.py
+```
+
+Open the browser at:
+
+```
+http://localhost:8501
+```
+
+---
+
+**Testing core functionalities**
+
+Once the chatbot is running stably, the next step is to verify the core functionalities to ensure the system works as expected—not just “responding,” but responding correctly and consistently.
+
+Key points to test:
+
+- **Multiple consecutive chat turns:**
+
+  - Conduct long conversations to test context memory. The chatbot should understand previous messages instead of treating each question as a new session.
+
+- **Adjusting temperature**
+
+  - Change the temperature value to observe creativity levels:
+
+  - Low value → stable, less varied responses  
+  - High value → more flexible and creative responses (but more prone to drifting)
+
+- **Changing max_tokens**
+
+  - Used to control response length, preventing responses from being too short or excessively long.
+
+- **Clear chat**
+  - Test the conversation reset feature  
+  - Chat history is fully cleared  
+  - System prompt is re-initialized correctly  
+  - This ensures the chatbot does not carry “old memories” into a new session.
+
+<p align="center">
+  <img src="images\chatbot_ui_local.png" style="margin: 0 auto; display: block;"><br/>
+  <em>Figure 2.1. Interface of a simple AI chatbot</em>
+</p>
+
+Test response speed on CPU and evaluate whether the chatbot meets real-world usage needs, especially in environments without GPU support.
+
+This testing step helps identify issues related to logic, performance, and user experience early, before the chatbot is used for demos or real deployment.
+
+*Full source code at **[Github](https://github.com/EvelynMyNguyen210/AIO_Project)***
+
+---
+
+**Notes when testing locally**
+
+- The first model load will be relatively slow  
+- CPU execution is not suitable for large-parameter models  
+- Avoid testing with multiple users simultaneously  
+
+*However, for **demo and learning purposes**, this configuration is **completely suitable** before deploying the chatbot to the cloud.*
+
+
 ## 3.1. Suggested Deployment Platforms
 
 When deploying an AI chatbot, choosing the right platform directly affects how easy it is to deploy, the cost, and the demo experience. Today, there are many options available, each suited for different goals. The table below compares some popular platforms for deploying chatbots, from learning demos to real-world applications.
