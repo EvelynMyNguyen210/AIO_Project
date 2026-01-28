@@ -344,6 +344,8 @@ Bước kiểm tra này giúp phát hiện sớm các vấn đề về logic, hi
 
 *Tuy nhiên, với mục tiêu **demo và học tập**, cấu hình này là **hoàn toàn phù hợp** trước khi đưa chatbot lên cloud.*
 
+# Đề xuất và triển khai chatbot
+
 # 3.1. Đề xuất các nền tảng triển khai 
 Khi triển khai một AI chatbot, việc chọn nền tảng deploy phù hợp ảnh hưởng trực tiếp đến độ dễ triển khai, chi phí và trải nghiệm demo. Hiện nay có nhiều lựa chọn khác nhau, mỗi nền tảng phù hợp với một mục tiêu riêng.
 Bảng dưới đây so sánh một số nền tảng phổ biến để deploy chatbot, từ demo học tập cho đến ứng dụng thực tế.
