@@ -49,6 +49,49 @@ In this blog, we will select these tech stack for the chatbot:
 **Web deployment:** Streamlit
 -	Streamlit is used to make Web UI for chatbot thanks to its high adaptability with python, easy to develop and maintain, which fits well with small chatbot project and does not require much knowledge in frontend programming.
 
+## 3.1. Suggested Deployment Platforms
+
+When deploying an AI chatbot, choosing the right platform directly affects how easy it is to deploy, the cost, and the demo experience. Today, there are many options available, each suited for different goals. The table below compares some popular platforms for deploying chatbots, from learning demos to real-world applications.
+
+| Platform            | Hugging Face Spaces          | Streamlit Cloud          | Render                 | Cloudflare Workers            | Vercel                        |
+| ------------------- | ---------------------------- | ------------------------ | ---------------------- | ----------------------------- | ----------------------------- |
+| Chatbot UI support  | Built-in (Gradio, Streamlit) | Built-in (Streamlit)     | Not included           | Not included                  | Not included                  |
+| AI model deployment | Very suitable for ML/LLMs    | Suitable for light demos | Manual setup required  | Not suitable for heavy models | Not suitable for heavy models |
+| Initial setup       | Create a Space, upload code  | Connect GitHub           | Configure services     | Write worker scripts          | Configure project             |
+| Cost                | Free for demos               | Free with limits         | Free tier available    | Free per request              | Free tier available           |
+| Performance         | Medium                       | Medium                   | Good                   | Very good (API)               | Very good (frontend/API)      |
+| Best use case       | Demos, learning, AI showcase | Quick demos              | Small backend services | Lightweight API backend       | Web apps + API                |
+<p align="center">
+  <em>Table 3.1. Comparison of deployment platforms</em>
+</p>
+
+### Quick Notes on Each Platform
+
+**Hugging Face Spaces**
+This is the best choice for AI chatbot demos. It supports machine learning models directly and provides ready-to-use chat UI. Ideal for students, technical blogs, and project showcases.
+
+**Streamlit Cloud**
+Works well if your chatbot is built with Streamlit. It’s easy to use, but running heavy models and deep system customization are more limited compared to Hugging Face Spaces.
+
+**Render**
+Good for deploying chatbot backends as APIs. However, you need to build the UI yourself and handle more configuration, so it’s not ideal for quick demos.
+
+**Cloudflare Workers**
+Very strong for APIs and lightweight production systems, but not suitable for running large AI models directly. Commonly used when the chatbot calls external AI APIs.
+
+**Vercel**
+Great for frontend and serverless APIs. That said, AI chatbots usually need to be combined with external AI services, so it’s not optimal for running LLMs directly in a demo.
+
+### Why This Blog Chooses Hugging Face Spaces
+
+With the goal of deploying a chatbot for free, keeping setup simple, and providing a visual demo, Hugging Face Spaces fits best:
+
+- No complex DevOps setup
+- Built-in chat UI with Gradio
+- Can run AI models directly
+- Easy to share demo links in blogs and GitHub README
+
+Because of that, **Hugging Face Spaces** is chosen as the deployment platform for the chatbot in this article.
 
 ## 3.2 Deploying the Chatbot to Hugging Face Spaces
 
@@ -135,3 +178,74 @@ After pushing the code, Hugging Face will automatically detect the ``Dockerfile`
 
 ---
 *Quick tip: If the app encounters an "Out of Memory" error, consider using a smaller model (such as Qwen 0.5B) or enabling 4-bit quantization (already configured in llm.py).*
+
+## 4. Limitations of Free Deployment
+
+Deploying chatbots on free platforms like Hugging Face Spaces offers many benefits for learning and demos. Still, to use them effectively, it’s important to understand their real-world limitations.
+
+### 4.1. Performance and Response Time
+
+One of the most noticeable issues with free deployments is inconsistent response speed. The chatbot may respond slower than when running locally or on stronger infrastructure, especially when:
+
+- The model reloads after inactivity (cold start)
+- Many users access it at the same time
+- The question requires long responses
+
+This happens because free tiers only provide limited CPU and memory. For demo and learning purposes, though, the delay is usually acceptable.
+
+### 4.2. Computing Resource Limits
+
+Free platforms typically limit:
+
+- RAM
+- Continuous runtime
+- GPU usage
+
+Because of this, free deployments are not suitable for very large models or long-running, complex tasks. In practice, demos should focus on:
+
+- Lightweight or optimized models
+- Limiting the number of generated tokens
+- Avoiding heavy parallel processing
+
+This is also why defining the chatbot’s scope early on is so important.
+
+### 4.3. Scalability Limits
+
+Free deployments are not designed for production use. As the number of users increases, the chatbot may face issues such as:
+
+- Slower responses
+- Timeout errors
+- Temporary unavailability
+
+For that reason, free deployments are best used for demos and experiments, not systems that require high stability or large-scale usage.
+
+### 4.4. Security and System Control Limits
+
+In free environments, control over security, logging, and monitoring is limited. Developers usually cannot:
+
+- Deeply customize network settings
+- Set up complex security mechanisms
+- Track detailed user behavior
+
+As a result, demo chatbots should avoid handling sensitive data and only be used in low-risk scenarios.
+
+### 4.5. Why These Limits Are Still Acceptable
+
+Despite these constraints, free chatbot deployment is still a very reasonable choice when the goal is to:
+
+- Demo for instructors or viewers
+- Learn and experiment with AI chatbots
+- Present ideas and system architecture
+
+More importantly, working within constraints helps developers better understand real-world trade-offs, which leads to stronger thinking when scaling chatbots in the future.
+
+In short, free deployment is not meant to replace production infrastructure. It serves as a bridge—helping a chatbot move from a local prototype to a usable, shareable web application.
+
+# 5. Conclusion
+
+Deployment is the step that turns a chatbot from a local program into a product that can be used directly in a browser. By deploying a chatbot with Gradio and Hugging Face Spaces, we can create a complete demo without complex infrastructure or high costs.
+
+More importantly, the deployment process helps developers understand the full lifecycle of a real AI application—from defining scope and writing code to running it in the cloud. Once this mindset is clear, future improvements—such as better UI, performance optimization, or custom data integration—become much easier.
+
+No complex systems or large budgets are required. With the right direction and the right tools, anyone can deploy an AI chatbot online.
+
