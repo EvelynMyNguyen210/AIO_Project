@@ -337,7 +337,7 @@ This testing step helps identify issues related to logic, performance, and user 
 
 *However, for **demo and learning purposes**, this configuration is **completely suitable** before deploying the chatbot to the cloud.*
 
-# 3. Proposing and deploying chatbots
+# 3. Proposing and cloud deployment
 
 ## 3.1. Suggested Deployment Platforms
 
