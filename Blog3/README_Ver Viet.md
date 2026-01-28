@@ -191,7 +191,7 @@ Phần xử lý AI được tách riêng trong file `llm.py` thông qua class Ch
 
 ---
 
-### 🔹 Load model Qwen
+**Load model Qwen**
 
 Model sử dụng trong project là:
 
