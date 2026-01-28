@@ -65,7 +65,7 @@ When deploying an AI chatbot, choosing the right platform directly affects how e
   <em>Table 3.1. Comparison of deployment platforms</em>
 </p>
 
-### Quick Notes on Each Platform
+#### Quick Notes on Each Platform
 
 **Hugging Face Spaces**
 This is the best choice for AI chatbot demos. It supports machine learning models directly and provides ready-to-use chat UI. Ideal for students, technical blogs, and project showcases.
@@ -82,7 +82,7 @@ Very strong for APIs and lightweight production systems, but not suitable for ru
 **Vercel**
 Great for frontend and serverless APIs. That said, AI chatbots usually need to be combined with external AI services, so it’s not optimal for running LLMs directly in a demo.
 
-### Why This Blog Chooses Hugging Face Spaces
+#### Why This Blog Chooses Hugging Face Spaces
 
 With the goal of deploying a chatbot for free, keeping setup simple, and providing a visual demo, Hugging Face Spaces fits best:
 
